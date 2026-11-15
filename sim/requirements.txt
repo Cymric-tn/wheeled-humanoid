@@ -1,0 +1,7 @@
+mujoco==4.0.1
+numpy==2.5.4
+# firmware_sim.py: plots, video, captions
+matplotlib>=3.8
+imageio>=2.34
+imageio-ffmpeg>=0.5
+pillow>=10.0

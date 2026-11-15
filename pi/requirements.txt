@@ -1,0 +1,5 @@
+# Pi service. On Raspberry Pi OS install picamera2 with apt (setup_pi.sh does it).
+pyserial>=3.5
+flask>=3.0
+pillow>=10.0
+luma.oled>=3.13     # OLED eyes; optional on a laptop
