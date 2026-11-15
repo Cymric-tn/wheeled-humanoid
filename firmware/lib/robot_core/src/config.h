@@ -68,11 +68,10 @@ enum Joint { L_PITCH = 0, L_ROLL, L_ELBOW, R_PITCH, R_ROLL, R_ELBOW, HEAD_PAN, H
 // Joint limits in degrees, in the digital-twin convention (sim/README.md):
 // pitch + raises the arm forward, roll + swings the arm outward, elbow + bends the forearm forward,
 // pan + turns the head left, tilt + looks down. Zero = CAD pose (arms down, head forward).
-const float J_MIN[NJ] = {-45, -30, 0, -45, -30, 0, -90, -30};
+// Shoulder roll stops at -15 deg (inward) at every pitch: sim/clearance.py sweeps the exact CAD solids and
+// finds the upper arm meets the shoulder plate, chest plate or a board from -21 deg (6 deg of margin).
+const float J_MIN[NJ] = {-45, -15, 0, -45, -15, 0, -90, -30};
 const float J_MAX[NJ] = {180, 120, 135, 180, 120, 135, 90, 30};
-// The forearm can reach the torso side plate when the arm hangs and rolls inward.
-const float ROLL_MIN_ARM_DOWN = -15.0f; // deg, applies while pitch is below:
-const float ROLL_RULE_PITCH = 45.0f;    // deg
 // Servo strip of each channel (wiring sheet 3): 0 = strip A, 1 = strip B.
 const uint8_t SERVO_STRIP[NJ] = {0, 0, 0, 1, 1, 1, 0, 1};
 

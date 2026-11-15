@@ -214,7 +214,7 @@ int main() {
     double t = r.runUntil("EVT VEL_TIMEOUT", 2);
     CHECK(v1 > 0.05 && t > 0.1 && t < 0.3, "VEL stream stops %.2f s after the last command", t + 0.3);
   }
-  {  // gestures: peak servo speed and the clearance rule
+  {  // gestures: peak servo speed and the joint limits
     Rig r;
     settle(r);
     r.cmd("WAVE R");
@@ -235,10 +235,10 @@ int main() {
     CHECK(t > 0, "WAVE completes in %.1f s", t);
     CHECK(peak <= cfg::SERVO_PEAK_DPS * 1.02, "servo peak speed %.1f deg/s (limit %.0f)", peak, cfg::SERVO_PEAK_DPS);
     CHECK(r.out.servo_on[cfg::R_PITCH] && r.out.servo_on[cfg::L_PITCH], "both servo strips enabled");
-    float q[cfg::NJ] = {0, -40, 0, 60, -40, 0, 0, 0};
+    float q[cfg::NJ] = {0, -40, 0, 170, -40, 200, 0, 50};
     Gestures::applyLimits(q);
-    CHECK(q[cfg::L_ROLL] == cfg::ROLL_MIN_ARM_DOWN && q[cfg::R_ROLL] == -30,
-          "roll limited to -15 deg only while the arm hangs (%.0f, %.0f)", q[cfg::L_ROLL], q[cfg::R_ROLL]);
+    CHECK(q[cfg::L_ROLL] == -15 && q[cfg::R_ROLL] == -15 && q[cfg::R_ELBOW] == 135 && q[cfg::HEAD_TILT] == 30,
+          "joint limits: inward roll stops at -15 deg at any pitch, elbow 135, tilt 30");
   }
   {  // servo strips start one after the other
     Rig r;

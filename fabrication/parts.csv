@@ -1,0 +1,28 @@
+no,file,qty,process,material,infill,walls,layer,size_mm,supports,grams_each
+P03,P03_bumper_pillar_x4.stl,4,3D print,PLA,40 %,4,0.2 mm,40 x 40 x 65,none,30
+P04,P04_motor_bracket_left_x1.stl,1,3D print,PLA,50 %,4,0.2 mm,72 x 65 x 33,none,38
+P04,P04_motor_bracket_right_x1.stl,1,3D print,PLA,50 %,4,0.2 mm,72 x 65 x 33,none,38
+P05,P05_caster_spacer_front_x1.stl,1,3D print,PLA,100 %,3,0.2 mm,32 x 60 x 3,none,8
+P05,P05_caster_spacer_rear_x1.stl,1,3D print,PLA,100 %,3,0.2 mm,32 x 60 x 3,none,8
+P06,P06_sensor_bar_x1.stl,1,3D print,PLA,25 %,3,0.2 mm,36 x 160 x 65,none (bridges up to 20 mm),33
+P07,P07_control_panel_x1.stl,1,3D print,PLA,40 %,4,0.2 mm,65 x 124 x 22,none,35
+P13,P13_corner_bracket_x8.stl,8,3D print,PLA,60 %,4,0.2 mm,24 x 22 x 22,none,5
+P15,P15_shoulder_bracket_left_x1.stl,1,3D print,PLA,40 %,4,0.2 mm,66 x 26 x 31,none,10
+P15,P15_shoulder_bracket_right_x1.stl,1,3D print,PLA,40 %,4,0.2 mm,66 x 26 x 31,none,10
+P16,P16_shoulder_yoke_left_x1.stl,1,3D print,PLA,40 %,4,0.2 mm,36 x 68 x 31,none (bridges up to 35 mm),17
+P16,P16_shoulder_yoke_right_x1.stl,1,3D print,PLA,40 %,4,0.2 mm,36 x 68 x 31,none (bridges up to 35 mm),17
+P17,P17_upper_arm_left_x1.stl,1,3D print,PLA,30 %,4,0.2 mm,164 x 40 x 33,none,33
+P17,P17_upper_arm_right_x1.stl,1,3D print,PLA,30 %,4,0.2 mm,164 x 40 x 33,none,33
+P19,P19_head_yoke_x1.stl,1,3D print,PLA,40 %,4,0.2 mm,66 x 84 x 37,none,22
+P20,P20_head_shell_x1.stl,1,3D print,PLA,15 %,3,0.2 mm,74 x 112 x 197,"build plate only, under the rounded lower edge (first 4 mm)",90
+L01,L01_lower_deck_x1.dxf,1,laser cut,5 mm sheet,,,,360.0 x 250.0,,
+L02,L02_upper_deck_x1.dxf,1,laser cut,5 mm sheet,,,,360.0 x 250.0,,
+L08,L08_torso_side_left_mega_x1.dxf,1,laser cut,5 mm sheet,,,,110.0 x 435.2,,
+L09,L09_torso_side_right_pi_x1.dxf,1,laser cut,5 mm sheet,,,,110.0 x 435.2,,
+L10,L10_torso_shelf_1_x1.dxf,1,laser cut,5 mm sheet,,,,83.4 x 95.0,,
+L10,L10_torso_shelf_2_x1.dxf,1,laser cut,5 mm sheet,,,,83.4 x 95.0,,
+L11,L11_chest_plate_x1.dxf,1,laser cut,5 mm sheet,,,,435.2 x 216.0,,
+L12,L12_back_plate_x1.dxf,1,laser cut,5 mm sheet,,,,435.2 x 216.0,,
+L14,L14_shoulder_plate_x1.dxf,1,laser cut,5 mm sheet,,,,110.0 x 236.0,,
+L18,L18_forearm_left_x1.dxf,1,laser cut,5 mm sheet,,,,44.0 x 147.0,,
+L18,L18_forearm_right_x1.dxf,1,laser cut,5 mm sheet,,,,44.0 x 147.0,,

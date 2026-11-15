@@ -66,9 +66,6 @@ void Gestures::applyLimits(float q[NJ]) {
     if (q[j] < J_MIN[j]) q[j] = J_MIN[j];
     if (q[j] > J_MAX[j]) q[j] = J_MAX[j];
   }
-  // clearance rule from the CAD sweep: no inward roll past -15 deg while the arm hangs
-  if (q[L_PITCH] < ROLL_RULE_PITCH && q[L_ROLL] < ROLL_MIN_ARM_DOWN) q[L_ROLL] = ROLL_MIN_ARM_DOWN;
-  if (q[R_PITCH] < ROLL_RULE_PITCH && q[R_ROLL] < ROLL_MIN_ARM_DOWN) q[R_ROLL] = ROLL_MIN_ARM_DOWN;
 }
 
 void Gestures::startSegment(const float target[NJ]) {

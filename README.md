@@ -21,7 +21,8 @@ make -C firmware test                      # 30 unit tests of the controller
 | [`pi/`](pi) | Raspberry Pi 5 service (Python): link to the Mega, OLED eyes, head camera, web control page |
 | [`sim/`](sim) | Digital twin (URDF + MuJoCo) generated from the CAD; firmware-in-the-loop simulation and its results |
 | [`wiring/`](wiring) | Wiring diagram (draw.io source + PDF, 3 sheets: power, signals, servos) |
-| [`print/`](print), [`laser/`](laser) | Fabrication files: 16 STL parts for 3D printing, 11 DXF plates for 5 mm laser-cut sheet |
+| [`fabrication/`](fabrication) | **Files for the FabLab:** numbered and oriented STLs (`P03_bumper_pillar_x4.stl`...), numbered DXFs (`L01_lower_deck_x1.dxf`...), and a table of material, infill, walls, orientation and supports for every part |
+| [`print/`](print), [`laser/`](laser) | Source fabrication files from the CAD: 16 STL parts for 3D printing, 11 DXF plates for 5 mm laser-cut sheet |
 | [`step_parts/`](step_parts), `*.step` | CAD: one STEP per part, the full assembly, and the assembly with every kit component |
 | [`info/`](info) | Dimensioned drawings (30 sheets with the exploded view and parts list) |
 | [`robot_viewer/`](robot_viewer) | ROS 2 description package (URDF + meshes) for RViz or any URDF viewer |
@@ -61,7 +62,7 @@ flowchart LR
 |---|---|
 | `drive.cpp` | **Motion profile:** the speed reference is ramped at 0.5 m/s² and capped at 0.40 m/s (0.12 m/s per wheel when turning). Braking follows v = √(2·0.8·a·d), so each move ends exactly on its target. **Position tracking:** each wheel follows the integral of the profile, a position reference, through a correction of 4 (m/s)/m. Tracking position, not only speed, makes the robot stop on target despite motor lag and keeps the wheels in step on straight lines. **Speed loop:** one PI loop per wheel, with feed-forward on speed and on acceleration (filtered). **Odometry:** encoders with 4× quadrature decoding; the gyro heading is integrated alongside as a cross-check (`EVT SLIP` above 10°) |
 | `obstacle.h` | Median of the last 3 readings per sensor, which rejects single spikes, then the minimum over the four sensors. ToF is precise but narrow and misses dark or glossy surfaces; ultrasound is wide but coarse, so each covers the other's blind case. Braking starts below 550 mm; forward motion is allowed again above 650 mm (hysteresis). If no sensor has reported for 500 ms, forward motion is refused |
-| `gestures.cpp` | Keyframes in joint space played with a minimum-jerk profile s(u) = 10u³ − 15u⁴ + 6u⁵. Each move is timed so its peak speed is 90°/s: no servo ever jumps, current peaks stay low, and a 75 cm structure does not shake. Joint limits and the forearm/torso clearance rule are applied to every interpolated point |
+| `gestures.cpp` | Keyframes in joint space played with a minimum-jerk profile s(u) = 10u³ − 15u⁴ + 6u⁵. Each move is timed so its peak speed is 90°/s: no servo ever jumps, current peaks stay low, and a 75 cm structure does not shake. Joint limits are applied to every interpolated point; they are checked for clearance on the CAD solids (`sim/clearance.py`) |
 | `robot_core.cpp` | Command parser, state machine, `DEMO` sequence, safety. **E-stop** (optional sense line D29): drivers disabled, servos released, latched until `RESET`. **Battery:** fault after 2 s below 9.9 V. **Teleop watchdog:** 500 ms. Servo strips A and B are powered 300 ms apart to halve the inrush current |
 | `main.cpp` | Hardware layer: interrupt-driven encoders, non-blocking VL53L0X reads, HC-SR04 alternating every 60 ms, raw MPU-6050 gyro with its bias measured at boot, PCA9685 written only when a value changes, motor PWM at 3.9 kHz |
 
@@ -139,6 +140,8 @@ cd pi && ../.venv/bin/python -m humanoid_pi --port socket://localhost:5555 --no-
 .venv/bin/mjpython sim/firmware_sim.py --viewer # watch it live (macOS)
 .venv/bin/python sim/firmware_sim.py --script "FWD 50; TURN -90; WAVE L"
 .venv/bin/python sim/firmware_sim.py --tcp 5555 # type commands: nc localhost 5555
+.venv/bin/python sim/clearance.py               # clearance of the exact CAD solids over the joint ranges
+.venv/bin/python fabrication/make_fabrication.py # rebuild the FabLab package after a CAD change
 ```
 
 ### Results (firmware in the loop, seed 1)
@@ -156,6 +159,8 @@ cd pi && ../.venv/bin/python -m humanoid_pi --port socket://localhost:5555 --no-
 ![signals](sim/results/demo_signals.png)
 
 **What the simulation changed or flagged:**
+
+- **The shoulder roll limit was corrected for V2.** `sim/clearance.py` intersects the exact CAD solids of each arm and the head with every other part over the whole firmware range (1408 arm poses, 91 head poses) and along the DEMO trajectory (314 poses). The rule inherited from the first version (inward roll limited to −15° only while the arm hangs) left 8 interfering poses per arm: on V2 the upper arm meets the shoulder plate, the chest plate or a board from **−21°** of inward roll at almost any pitch. The firmware now stops inward roll at −15° at every pitch (6° of margin); with it, no allowed pose interferes. No gesture uses inward roll, so nothing is lost. See [`sim/results/clearance.md`](sim/results/clearance.md).
 
 - **Position tracking was added to the drive.** With speed loops only, the twin, which has the real 4.8 kg mass and a DC-motor torque curve, overshot `FWD 100` by 5 cm and `TURN 90` by 10°. The host tests had used a faster ideal motor and missed it. Tracking each wheel's position reference brought the errors to 2 mm and 0.9°.
 - **Turns come out 0.9° short**, and the encoders read 1.2° more than the true yaw. The tyres are wide, so the effective track is a little larger than 300 mm. `TRACK` in `config.h` is calibrated with `TURN 360` on the floor.

@@ -13,6 +13,7 @@
 | `meshes/` | One STL per part, in metres, already placed in its link's frame. |
 | `test_twin.py` | Smoke test: both files load, no self-collision, the robot settles, each joint moves the right way, the robot drives and turns, and the ToF sensor sees the wall. |
 | `firmware_sim.py` | **Firmware in the loop.** The Mega controller (`firmware/lib/robot_core`, compiled for this computer) drives the twin through simulated encoders, range sensors, gyro, motors and servos. Runs the `DEMO`, writes `results/`, or serves the serial protocol on TCP. |
+| `clearance.py` | Clearance check on the exact CAD solids: each arm and the head swept through the firmware joint ranges, plus the DEMO trajectory. Writes `results/clearance.md`, `.csv` and `clearance_map.png`. |
 | `demo_scene.xml` | World for the demonstration: floor and a wall that the robot meets after its 90° turn. |
 | `results/` | Output of `firmware_sim.py`: metrics (`demo_metrics.md`, `.json`), signals plot, frames, full log (CSV), events, video. |
 | `demo.py` | Scripted motion without the firmware, for a quick look in the viewer. |
@@ -62,7 +63,7 @@ Zero on every joint is the CAD pose: arms hanging down, head facing forward. Whe
 
 All of these are set at the top of `generate_twin.py`:
 
-- **Joint ranges** (±90°, head tilt ±45°) are placeholders. Measure the range each joint really reaches before it hits something on the robot.
+- **Joint ranges** in the twin (±90°, head tilt ±45°) are generic. The firmware limits are the ones that matter (`config.h`); `clearance.py` checks them on the CAD solids. Confirm them on the real robot.
 - **Servo effort and speed** (0.94 N·m, 6 rad/s) assume an MG996R-class servo. Use the datasheet values for your actual servos.
 - **Wheel motor torque and speed** (1 N·m, 30 rad/s) are placeholders. Use your gearmotor's datasheet.
 - **Masses.** The laser-cut plates (`laser/`) assume acrylic (1190 kg/m³); if they're plywood or MDF, change `DENSITY_LASER` to about 650–750. The printed parts (`print/`) assume 750 kg/m³ for PLA at 30–40 % infill. Bought parts (servos, motors, battery, boards) use typical datasheet weights. The total comes out at about 4.8 kg. **Weigh the real robot and each subassembly**, then correct the values here.

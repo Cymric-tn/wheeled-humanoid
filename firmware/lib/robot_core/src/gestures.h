@@ -28,7 +28,7 @@ class Gestures {
   const float* position() const { return pos_; }
   static const char* name(GestureId id);
 
-  // Limits, including the forearm / torso clearance rule. Public for the tests.
+  // Joint limits (config.h), checked for clearance on the CAD solids. Public for the tests.
   static void applyLimits(float q[cfg::NJ]);
 
  private:
