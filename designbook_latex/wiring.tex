@@ -1,0 +1,26 @@
+% Wheeled Humanoid - wiring diagram, standalone bench copy. pdflatex wiring.tex
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}\usepackage[utf8]{inputenc}
+\usepackage[scaled=0.95]{helvet}\renewcommand{\familydefault}{\sfdefault}
+\usepackage[a4paper,margin=18mm,top=20mm,bottom=20mm]{geometry}
+\usepackage{graphicx,xcolor,booktabs,tabularx,longtable,array,float,enumitem,textcomp,amsmath,titlesec,fancyhdr}
+\usepackage{tikz}
+\definecolor{rasred}{gray}{0}\definecolor{raspurple}{gray}{0}\definecolor{soft}{gray}{0.95}
+\definecolor{pwr}{HTML}{C0392B}\definecolor{sig}{HTML}{2C6FBB}\definecolor{sda}{HTML}{1E8E4E}\definecolor{scl}{HTML}{D9820B}\definecolor{act}{HTML}{E08E0B}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\titleformat{\section}{\Large\bfseries\color{rasred}}{}{0em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{raspurple}}{}{0em}{}
+\setlist{nosep,leftmargin=1.4em}\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}\renewcommand{\arraystretch}{1.15}
+\pagestyle{fancy}\fancyhf{}\lhead{\small\color{gray}Wheeled Humanoid \textperiodcentered{} Wiring diagram}\rhead{\small\color{gray}Sheet \thepage}\renewcommand{\headrulewidth}{0.3pt}
+\begin{document}
+\section{Sheet 1: power wiring}
+Every terminal from the battery to each load. Thick lines are 14 AWG, thin lines 16 AWG.
+\begin{center}\input{wiring/power.tex}\end{center}
+\clearpage
+\section{Sheet 2: signal wiring}
+Every module pin to its controller pin. Blue: digital signal. Green: I\textsuperscript{2}C SDA. Orange: I\textsuperscript{2}C SCL. Red and black tags: 5\,V and GND from the Mega (3.3\,V and GND from the Pi for the OLEDs).
+\begin{center}\input{wiring/signal.tex}\end{center}
+\clearpage
+\section{Sheet 3: connection tables}
+\input{wiring/tables.tex}
+\end{document}

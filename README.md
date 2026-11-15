@@ -1,4 +1,4 @@
-# Wheeled Humanoid v2
+# Wheeled Humanoid
 
 **IEEE RAS Tunisia × ODC FabLab · RAS Build Challenge, design phase · Project 2**
 
@@ -160,7 +160,7 @@ cd pi && ../.venv/bin/python -m humanoid_pi --port socket://localhost:5555 --no-
 
 **What the simulation changed or flagged:**
 
-- **The shoulder roll limit was corrected for V2.** `sim/clearance.py` intersects the exact CAD solids of each arm and the head with every other part over the whole firmware range (1408 arm poses, 91 head poses) and along the DEMO trajectory (314 poses). The rule inherited from the first version (inward roll limited to −15° only while the arm hangs) left 8 interfering poses per arm: on V2 the upper arm meets the shoulder plate, the chest plate or a board from **−21°** of inward roll at almost any pitch. The firmware now stops inward roll at −15° at every pitch (6° of margin); with it, no allowed pose interferes. No gesture uses inward roll, so nothing is lost. See [`sim/results/clearance.md`](sim/results/clearance.md).
+- **The shoulder roll limit was corrected.** `sim/clearance.py` intersects the exact CAD solids of each arm and the head with every other part over the whole firmware range (1408 arm poses, 91 head poses) and along the DEMO trajectory (314 poses). The rule inherited from the first version (inward roll limited to −15° only while the arm hangs) left 8 interfering poses per arm: on this design the upper arm meets the shoulder plate, the chest plate or a board from **−21°** of inward roll at almost any pitch. The firmware now stops inward roll at −15° at every pitch (6° of margin); with it, no allowed pose interferes. No gesture uses inward roll, so nothing is lost. See [`sim/results/clearance.md`](sim/results/clearance.md).
 
 - **Position tracking was added to the drive.** With speed loops only, the twin, which has the real 4.8 kg mass and a DC-motor torque curve, overshot `FWD 100` by 5 cm and `TURN 90` by 10°. The host tests had used a faster ideal motor and missed it. Tracking each wheel's position reference brought the errors to 2 mm and 0.9°.
 - **Turns come out 0.9° short**, and the encoders read 1.2° more than the true yaw. The tyres are wide, so the effective track is a little larger than 300 mm. `TRACK` in `config.h` is calibrated with `TURN 360` on the floor.

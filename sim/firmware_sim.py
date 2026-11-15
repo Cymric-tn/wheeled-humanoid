@@ -461,7 +461,7 @@ def write_results(s, M, frames):
             a.axvline(tt, c="k", lw=0.3, alpha=0.4)
     for tt, lab in starts:
         ax[0].text(tt + 0.1, ax[0].get_ylim()[1] * 0.92, lab, fontsize=7, rotation=90, va="top")
-    fig.suptitle("Firmware in the loop: DEMO on the V2 digital twin")
+    fig.suptitle("Firmware in the loop: DEMO on the digital twin")
     fig.tight_layout()
     fig.savefig(os.path.join(RESULTS, "demo_signals.png"), dpi=130)
     plt.close(fig)

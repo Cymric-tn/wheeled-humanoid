@@ -1,0 +1,108 @@
+% ---------------------------------------------------------------- power wire schedule
+\subsubsection*{Power wire schedule}
+{\small
+\begin{longtable}{@{}lP{41mm}P{46mm}llr@{}}
+\toprule
+\textbf{No.} & \textbf{From} & \textbf{To} & \textbf{Gauge} & \textbf{Colour} & \textbf{cm}\\
+\midrule\endhead
+W1 & Battery XT60, + & Fuse holder, in & 14 AWG & red & 15\\
+W2 & Fuse holder, out & KCD4 switch, in & 14 AWG & red & 8\\
+W3 & KCD4 switch, out & Splice +SW & 14 AWG & red & 5\\
+W4 & Splice +SW & Emergency stop, NC in & 14 AWG & red & 8\\
+W5 & Emergency stop, NC out & Splice +ACT & 14 AWG & red & 8\\
+W6 & Battery XT60, $-$ & Splice GND & 14 AWG & black & 20\\
+W7, W8 & Splice +SW, splice GND & XY-3606 IN+, IN$-$ & 16 AWG & red, black & 2 $\times$ 15\\
+W9, W10 & XY-3606 OUT+, OUT$-$ & Pi header pins 2 and 4, pin 6 & 16 AWG & red, black & 2 $\times$ 45\\
+W11, W12 & Splice +ACT, splice GND & XL4016 A IN+, IN$-$ & 16 AWG & red, black & 2 $\times$ 15\\
+W13, W14 & Splice +ACT, splice GND & XL4016 B IN+, IN$-$ & 16 AWG & red, black & 2 $\times$ 15\\
+W15, W16 & XL4016 A OUT+, OUT$-$ & Servo strip A, V+ and GND & 16 AWG & red, black & 2 $\times$ 35\\
+W17, W18 & XL4016 B OUT+, OUT$-$ & Servo strip B, V+ and GND & 16 AWG & red, black & 2 $\times$ 35\\
+W19, W20 & Splice +ACT, splice GND & BTS7960 left B+, B$-$ & 16 AWG & red, black & 2 $\times$ 35\\
+W21, W22 & Splice +ACT, splice GND & BTS7960 right B+, B$-$ & 16 AWG & red, black & 2 $\times$ 35\\
+W23, W24 & BTS7960 left M+, M$-$ & Left motor M1, M2 & motor cable & -- & supplied\\
+W25, W26 & BTS7960 right M+, M$-$ & Right motor M1, M2 & motor cable & -- & supplied\\
+W27 & Splice +SW & Divider 10\,k$\Omega$, then 3.3\,k$\Omega$ to GND & 26 AWG & red & 10\\
+W28 & PCA9685 GND & Servo strip A and B GND & 26 AWG & black & 10\\
+\bottomrule
+\end{longtable}}
+\textbf{Wire budget.} 14 AWG: 64\,cm, within the 1\,m supplied. 16 AWG: about 4.6\,m, against 1\,m supplied. Signal wire: about 27\,m of conductor, and the kit contains DuPont housings and pins but no wire. Both are added to the part requests.
+
+\subsubsection*{Servo plugs on the strips}
+Each servo plug lands on a 3-pin header on the perfboard: signal from one PCA9685 channel (signal pin only), V+ and GND from its strip.
+\begin{table}[H]\small
+\begin{tabularx}{\linewidth}{@{}lLlll@{}}
+\toprule
+\textbf{PCA9685 channel} & \textbf{Joint} & \textbf{Servo} & \textbf{Strip} & \textbf{Plug: signal / V+ / GND}\\
+\midrule
+0 & Left shoulder pitch & TD-8130MG & A & orange / red / brown\\
+1 & Left shoulder roll & TD-8130MG & A & orange / red / brown\\
+2 & Left elbow & RCXAZ 18\,kg & A & orange / red / brown\\
+3 & Right shoulder pitch & TD-8130MG & B & orange / red / brown\\
+4 & Right shoulder roll & TD-8130MG & B & orange / red / brown\\
+5 & Right elbow & RCXAZ 18\,kg & B & orange / red / brown\\
+6 & Head pan & MG996 & A & orange / red / brown\\
+7 & Head tilt & MG996 & B & orange / red / brown\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------- netlist
+\subsubsection*{Signal connection table}
+{\small
+\begin{longtable}{@{}P{37mm}P{27mm}P{38mm}P{50mm}@{}}
+\toprule
+\textbf{Module} & \textbf{Module pin} & \textbf{Goes to} & \textbf{Note}\\
+\midrule\endhead
+Left motor, 6-pin plug & C1 (phase A) & Mega D2 & Interrupt pin\\
+ & C2 (phase B) & Mega D18 & Interrupt pin\\
+ & VCC, GND & Mega 5V, GND & Encoder supply\\
+ & M1, M2 & BTS7960 left M+, M$-$ & Swap if the wheel turns backwards\\
+Right motor, 6-pin plug & C1 (phase A) & Mega D3 & Interrupt pin\\
+ & C2 (phase B) & Mega D19 & Interrupt pin\\
+ & VCC, GND & Mega 5V, GND & \\
+ & M1, M2 & BTS7960 right M+, M$-$ & \\
+BTS7960 left & 1 RPWM & Mega D5 & PWM, forward\\
+ & 2 LPWM & Mega D6 & PWM, reverse\\
+ & 3 R\_EN and 4 L\_EN & Mega D30 & Joined at the module; low disables the driver\\
+ & 5 R\_IS, 6 L\_IS & not connected & Current sense, unused\\
+ & 7 VCC, 8 GND & Mega 5V, GND & Logic supply\\
+BTS7960 right & 1 RPWM & Mega D7 & \\
+ & 2 LPWM & Mega D8 & \\
+ & 3 R\_EN and 4 L\_EN & Mega D31 & \\
+ & 7 VCC, 8 GND & Mega 5V, GND & \\
+HC-SR04 left & Trig, Echo & Mega D22, D23 & 5\,V echo, no divider needed on a Mega\\
+HC-SR04 right & Trig, Echo & Mega D24, D25 & \\
+HC-SR04, both & VCC, GND & Mega 5V, GND & \\
+VL53L0X no. 1 & SDA, SCL & Mega D20, D21 & Re-addressed to 0x30 at boot\\
+ & XSHUT & Mega D26 & Drive low or leave as input; never drive high\\
+VL53L0X no. 2 & SDA, SCL & Mega D20, D21 & Keeps 0x29\\
+ & XSHUT & Mega D27 & Same rule\\
+VL53L0X, both & VIN, GND & Mega 5V, GND & \\
+MPU-6050 & SDA, SCL & Mega D20, D21 & \\
+ & AD0 & GND & Address 0x68\\
+ & VCC, GND & Mega 5V, GND & \\
+PCA9685 & SDA, SCL & Mega D20, D21 & \\
+ & OE & Mega D28 & High releases all servos\\
+ & VCC, GND & Mega 5V, GND & Logic supply only\\
+ & V+ & not connected & Servo power never passes through this board\\
+ & PWM 0 to 7 (signal pin) & Signal pin of servo headers 0 to 7 & One wire per channel\\
+Battery divider & Mid-point & Mega A0 & 10\,k$\Omega$ over 3.3\,k$\Omega$: 3.1\,V at 12.6\,V\\
+E-stop, spare NO contact & 13, 14 & Mega D29, GND & Optional; lets the firmware see the stop\\
+Mega & USB-B & Pi USB-A & Serial link and 5\,V supply of the Mega\\
+OLED left & SDA, SCL & Pi pin 3, pin 5 & I\textsuperscript{2}C bus 1\\
+ & VCC, GND & Pi pin 1, pin 9 & 3.3\,V\\
+OLED right & SDA, SCL & Pi pin 16, pin 18 & Software bus on GPIO23, GPIO24\\
+ & VCC, GND & Pi pin 17, pin 25 & 3.3\,V\\
+Pi camera & 22-pin ribbon & Pi CAM/DISP 0 & 300\,mm ribbon requested\\
+XY-3606 & OUT+, OUT$-$ & Pi pins 2 and 4, pin 6 & Set to 5.1\,V before connecting\\
+\bottomrule
+\end{longtable}}
+
+\textbf{Checks before the first power-on.}
+\begin{itemize}
+\item \textbf{Set every converter with nothing connected to its output:} XL4016 A and B to 6.8\,V, XY-3606 to 5.1\,V, measured with a multimeter.
+\item \textbf{Pin orders are those of the common versions of each module.} The 6-pin motor plug in particular varies between suppliers: read the labels on the motor board before wiring it.
+\item \textbf{Powering the Pi through its header bypasses its input protection.} Polarity and voltage must be checked before the Pi is connected.
+\item \textbf{I\textsuperscript{2}C levels.} The Mega pulls SDA and SCL to 5\,V through 10\,k$\Omega$. The VL53L0X and MPU-6050 breakouts tolerate this in practice; if the bus is unreliable, add a level shifter.
+\item \textbf{Emergency stop rating.} If the supplied button is rated below 20\,A, wire it to the driver enable lines and the PCA9685 OE pin instead of the power lead.
+\end{itemize}
